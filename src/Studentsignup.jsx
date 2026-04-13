@@ -16,7 +16,10 @@ export default function Signup() {
     }
 
     try {
-      await axios.post("http://localhost:5500/student/signup", {
+      await axios.post("| Find                                           | Replace                                                                            |
+| ---------------------------------------------- | ---------------------------------------------------------------------------------- |
+| [http://localhost:5500](http://localhost:5500) | [https://your-backend-url.up.railway.app](https://your-backend-url.up.railway.app) |
+/student/signup", {
         name,
         email,
         password,

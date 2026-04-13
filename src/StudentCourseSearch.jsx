@@ -2,7 +2,10 @@ import React, { useEffect, useState, useMemo, useRef } from "react";
 import axios from "axios";
 
 export default function StudentCourseSearch() {
-  const baseUrl = "http://localhost:5500";
+  const baseUrl = "| Find                                           | Replace                                                                            |
+| ---------------------------------------------- | ---------------------------------------------------------------------------------- |
+| [http://localhost:5500](http://localhost:5500) | [https://your-backend-url.up.railway.app](https://your-backend-url.up.railway.app) |
+";
 
   /* ---------- STATES ---------- */
   const [courses, setCourses] = useState([]);

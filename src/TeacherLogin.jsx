@@ -19,7 +19,10 @@ export default function TeacherLogin() {
     e.preventDefault();
 
     try {
-      const res = await axios.post("http://localhost:5500/teacher/login", {
+      const res = await axios.post("| Find                                           | Replace                                                                            |
+| ---------------------------------------------- | ---------------------------------------------------------------------------------- |
+| [http://localhost:5500](http://localhost:5500) | [https://your-backend-url.up.railway.app](https://your-backend-url.up.railway.app) |
+/teacher/login", {
         email,
         password,
       });

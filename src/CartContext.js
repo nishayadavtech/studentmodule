@@ -17,7 +17,10 @@ export const CartProvider = ({ children }) => {
 
     try {
       const res = await axios.get(
-        `http://localhost:5500/cart/viewcart/${user_id}`
+        `| Find                                           | Replace                                                                            |
+| ---------------------------------------------- | ---------------------------------------------------------------------------------- |
+| [http://localhost:5500](http://localhost:5500) | [https://your-backend-url.up.railway.app](https://your-backend-url.up.railway.app) |
+/cart/viewcart/${user_id}`
       );
       setCartCount(Array.isArray(res.data) ? res.data.length : 0);
     } catch (err) {

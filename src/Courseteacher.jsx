@@ -10,7 +10,10 @@ const TeacherDashboard = () => {
         const token = localStorage.getItem("teacherToken");
 
         const res = await axios.get(
-          "http://localhost:5500/course/my-courses",
+          "| Find                                           | Replace                                                                            |
+| ---------------------------------------------- | ---------------------------------------------------------------------------------- |
+| [http://localhost:5500](http://localhost:5500) | [https://your-backend-url.up.railway.app](https://your-backend-url.up.railway.app) |
+/course/my-courses",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -39,7 +42,10 @@ const TeacherDashboard = () => {
             {/* ✅ IMAGE FIXED HERE */}
             {course.image_url && (
               <img
-                src={`http://localhost:5500${course.image_url}`}
+                src={`| Find                                           | Replace                                                                            |
+| ---------------------------------------------- | ---------------------------------------------------------------------------------- |
+| [http://localhost:5500](http://localhost:5500) | [https://your-backend-url.up.railway.app](https://your-backend-url.up.railway.app) |
+${course.image_url}`}
                 alt={course.course_name}
                 className="w-full h-40 object-cover rounded mb-2"
               />

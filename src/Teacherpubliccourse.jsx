@@ -42,7 +42,10 @@ export default function AllCourses() {
       return rawImage;
     }
 
-    return `http://localhost:5500${
+    return `| Find                                           | Replace                                                                            |
+| ---------------------------------------------- | ---------------------------------------------------------------------------------- |
+| [http://localhost:5500](http://localhost:5500) | [https://your-backend-url.up.railway.app](https://your-backend-url.up.railway.app) |
+${
       rawImage.startsWith("/") ? rawImage : `/${rawImage}`
     }`;
   }, [getFallbackImage]);
@@ -50,7 +53,10 @@ export default function AllCourses() {
   const fetchCourses = async () => {
     setLoading(true);
     try {
-      const res = await axios.get("http://localhost:5500/course/all-courses");
+      const res = await axios.get("| Find                                           | Replace                                                                            |
+| ---------------------------------------------- | ---------------------------------------------------------------------------------- |
+| [http://localhost:5500](http://localhost:5500) | [https://your-backend-url.up.railway.app](https://your-backend-url.up.railway.app) |
+/course/all-courses");
       setCourses(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
       console.error(err);
@@ -76,11 +82,20 @@ export default function AllCourses() {
 
       const [cartResult, purchaseResult] = await Promise.allSettled([
         axios
-          .get(`http://localhost:5500/cart/viewcart/${student_id}`)
+          .get(`| Find                                           | Replace                                                                            |
+| ---------------------------------------------- | ---------------------------------------------------------------------------------- |
+| [http://localhost:5500](http://localhost:5500) | [https://your-backend-url.up.railway.app](https://your-backend-url.up.railway.app) |
+/cart/viewcart/${student_id}`)
           .catch(() =>
-            axios.get(`http://localhost:5500/cart/viewcart?user_id=${student_id}`)
+            axios.get(`| Find                                           | Replace                                                                            |
+| ---------------------------------------------- | ---------------------------------------------------------------------------------- |
+| [http://localhost:5500](http://localhost:5500) | [https://your-backend-url.up.railway.app](https://your-backend-url.up.railway.app) |
+/cart/viewcart?user_id=${student_id}`)
           ),
-        axios.get(`http://localhost:5500/course/my-purchases/${student_id}`),
+        axios.get(`| Find                                           | Replace                                                                            |
+| ---------------------------------------------- | ---------------------------------------------------------------------------------- |
+| [http://localhost:5500](http://localhost:5500) | [https://your-backend-url.up.railway.app](https://your-backend-url.up.railway.app) |
+/course/my-purchases/${student_id}`),
       ]);
 
       const cartRes = cartResult.status === "fulfilled" ? cartResult.value : null;
@@ -140,7 +155,10 @@ export default function AllCourses() {
 
       setAddingId(course_id);
 
-      await axios.post("http://localhost:5500/cart/addtocart", {
+      await axios.post("| Find                                           | Replace                                                                            |
+| ---------------------------------------------- | ---------------------------------------------------------------------------------- |
+| [http://localhost:5500](http://localhost:5500) | [https://your-backend-url.up.railway.app](https://your-backend-url.up.railway.app) |
+/cart/addtocart", {
         course_id,
         user_id: student_id,
       });
@@ -214,9 +232,15 @@ export default function AllCourses() {
 
           try {
             const cartRes = await axios
-              .get(`http://localhost:5500/cart/viewcart/${student_id}`)
+              .get(`| Find                                           | Replace                                                                            |
+| ---------------------------------------------- | ---------------------------------------------------------------------------------- |
+| [http://localhost:5500](http://localhost:5500) | [https://your-backend-url.up.railway.app](https://your-backend-url.up.railway.app) |
+/cart/viewcart/${student_id}`)
               .catch(() =>
-                axios.get(`http://localhost:5500/cart/viewcart?user_id=${student_id}`)
+                axios.get(`| Find                                           | Replace                                                                            |
+| ---------------------------------------------- | ---------------------------------------------------------------------------------- |
+| [http://localhost:5500](http://localhost:5500) | [https://your-backend-url.up.railway.app](https://your-backend-url.up.railway.app) |
+/cart/viewcart?user_id=${student_id}`)
               );
 
             const cartItems = Array.isArray(cartRes?.data)
@@ -232,7 +256,10 @@ export default function AllCourses() {
             );
 
             if (existingCartItem?.cartid) {
-              await axios.delete(`http://localhost:5500/cart/${existingCartItem.cartid}`);
+              await axios.delete(`| Find                                           | Replace                                                                            |
+| ---------------------------------------------- | ---------------------------------------------------------------------------------- |
+| [http://localhost:5500](http://localhost:5500) | [https://your-backend-url.up.railway.app](https://your-backend-url.up.railway.app) |
+/cart/${existingCartItem.cartid}`);
             }
           } catch (cleanupError) {
             console.error("Cart cleanup after enroll failed:", cleanupError);

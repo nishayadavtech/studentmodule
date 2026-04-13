@@ -9,7 +9,10 @@ import {
   saveLocalTeacherTopics,
 } from "./teacherDataStorage";
 
-const API = "http://localhost:5500";
+const API = "| Find                                           | Replace                                                                            |
+| ---------------------------------------------- | ---------------------------------------------------------------------------------- |
+| [http://localhost:5500](http://localhost:5500) | [https://your-backend-url.up.railway.app](https://your-backend-url.up.railway.app) |
+";
 
 const initialForm = {
   syllabus_id: "",
@@ -36,7 +39,10 @@ const fileToDataUrl = async (file) => {
     const formData = new FormData();
     formData.append("video", file);
 
-    const res = await fetch("http://localhost:5500/upload-video", {
+    const res = await fetch("| Find                                           | Replace                                                                            |
+| ---------------------------------------------- | ---------------------------------------------------------------------------------- |
+| [http://localhost:5500](http://localhost:5500) | [https://your-backend-url.up.railway.app](https://your-backend-url.up.railway.app) |
+/upload-video", {
       method: "POST",
       body: formData,
     });
