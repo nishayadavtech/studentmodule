@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
+const API = "https://learning-production.up.railway.app";
+
 const TeacherDashboard = () => {
   const [courses, setCourses] = useState([]);
 
@@ -9,17 +11,11 @@ const TeacherDashboard = () => {
       try {
         const token = localStorage.getItem("teacherToken");
 
-        const res = await axios.get(
-          "| Find                                           | Replace                                                                            |
-| ---------------------------------------------- | ---------------------------------------------------------------------------------- |
-| [http://localhost:5500](http://localhost:5500) | [https://your-backend-url.up.railway.app](https://your-backend-url.up.railway.app) |
-/course/my-courses",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const res = await axios.get(`${API}/course/my-courses`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
         console.log("Response:", res.data);
         setCourses(res.data);
@@ -38,14 +34,9 @@ const TeacherDashboard = () => {
       {courses.length > 0 ? (
         courses.map((course) => (
           <div key={course.course_id} className="border p-4 mb-4 rounded shadow">
-
-            {/* ✅ IMAGE FIXED HERE */}
             {course.image_url && (
               <img
-                src={`| Find                                           | Replace                                                                            |
-| ---------------------------------------------- | ---------------------------------------------------------------------------------- |
-| [http://localhost:5500](http://localhost:5500) | [https://your-backend-url.up.railway.app](https://your-backend-url.up.railway.app) |
-${course.image_url}`}
+                src={`${API}${course.image_url}`}
                 alt={course.course_name}
                 className="w-full h-40 object-cover rounded mb-2"
               />

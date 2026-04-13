@@ -53,10 +53,7 @@ export default function Studentdashboard() {
       return rawImage;
     }
 
-    return `| Find                                           | Replace                                                                            |
-| ---------------------------------------------- | ---------------------------------------------------------------------------------- |
-| [http://localhost:5500](http://localhost:5500) | [https://your-backend-url.up.railway.app](https://your-backend-url.up.railway.app) |
-${
+    return `https://learning-production.up.railway.app${
       rawImage.startsWith("/") ? rawImage : `/${rawImage}`
     }`;
   }, []);
@@ -92,21 +89,12 @@ ${
       const paymentCourses = paymentHistory.map((item) => item.course).filter(Boolean);
 
       const [purchaseResult, cartResult] = await Promise.allSettled([
-        axios.get(`| Find                                           | Replace                                                                            |
-| ---------------------------------------------- | ---------------------------------------------------------------------------------- |
-| [http://localhost:5500](http://localhost:5500) | [https://your-backend-url.up.railway.app](https://your-backend-url.up.railway.app) |
-/course/my-purchases/${student.student_id}`),
+        axios.get(`https://learning-production.up.railway.app/course/my-purchases/${student.student_id}`),
         axios
-          .get(`| Find                                           | Replace                                                                            |
-| ---------------------------------------------- | ---------------------------------------------------------------------------------- |
-| [http://localhost:5500](http://localhost:5500) | [https://your-backend-url.up.railway.app](https://your-backend-url.up.railway.app) |
-/cart/viewcart/${student.student_id}`)
+          .get(`https://learning-production.up.railway.app/cart/viewcart/${student.student_id}`)
           .catch(() =>
             axios.get(
-              `| Find                                           | Replace                                                                            |
-| ---------------------------------------------- | ---------------------------------------------------------------------------------- |
-| [http://localhost:5500](http://localhost:5500) | [https://your-backend-url.up.railway.app](https://your-backend-url.up.railway.app) |
-/cart/viewcart?user_id=${student.student_id}`
+              `https://learning-production.up.railway.app/cart/viewcart?user_id=${student.student_id}`
             )
           ),
       ]);

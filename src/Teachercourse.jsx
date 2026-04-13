@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
+const API = "https://learning-production.up.railway.app";
+
 export default function TeacherCourses() {
   const navigate = useNavigate();
 
@@ -35,10 +37,7 @@ export default function TeacherCourses() {
       const token = localStorage.getItem("teacherToken");
 
       const res = await axios.get(
-        "| Find                                           | Replace                                                                            |
-| ---------------------------------------------- | ---------------------------------------------------------------------------------- |
-| [http://localhost:5500](http://localhost:5500) | [https://your-backend-url.up.railway.app](https://your-backend-url.up.railway.app) |
-/course/my-courses",
+        `${API}/course/my-courses`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -66,10 +65,7 @@ export default function TeacherCourses() {
 
     try {
       await axios.post(
-        "| Find                                           | Replace                                                                            |
-| ---------------------------------------------- | ---------------------------------------------------------------------------------- |
-| [http://localhost:5500](http://localhost:5500) | [https://your-backend-url.up.railway.app](https://your-backend-url.up.railway.app) |
-/course/addcourse",
+        `${API}/course/addcourse`,
         data,
         {
           headers: {
@@ -99,10 +95,7 @@ export default function TeacherCourses() {
 
     try {
       await axios.put(
-        `| Find                                           | Replace                                                                            |
-| ---------------------------------------------- | ---------------------------------------------------------------------------------- |
-| [http://localhost:5500](http://localhost:5500) | [https://your-backend-url.up.railway.app](https://your-backend-url.up.railway.app) |
-/course/updatecourse/${editingId}`,
+        `${API}/course/updatecourse/${editingId}`,
         data,
         {
           headers: {
@@ -129,10 +122,7 @@ export default function TeacherCourses() {
 
     try {
       await axios.delete(
-        `| Find                                           | Replace                                                                            |
-| ---------------------------------------------- | ---------------------------------------------------------------------------------- |
-| [http://localhost:5500](http://localhost:5500) | [https://your-backend-url.up.railway.app](https://your-backend-url.up.railway.app) |
-/course/deletecourse/${id}`,
+        `${API}/course/deletecourse/${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -161,12 +151,7 @@ export default function TeacherCourses() {
     });
 
     if (course.image_url) {
-      setImagePreview(
-        `| Find                                           | Replace                                                                            |
-| ---------------------------------------------- | ---------------------------------------------------------------------------------- |
-| [http://localhost:5500](http://localhost:5500) | [https://your-backend-url.up.railway.app](https://your-backend-url.up.railway.app) |
-${course.image_url}`
-      );
+      setImagePreview(`${API}${course.image_url}`);
     }
 
     setShowForm(true);
@@ -288,17 +273,11 @@ ${course.image_url}`
     if (c.image_url) {
       imgUrl = c.image_url.startsWith("http")
         ? c.image_url
-        : `| Find                                           | Replace                                                                            |
-| ---------------------------------------------- | ---------------------------------------------------------------------------------- |
-| [http://localhost:5500](http://localhost:5500) | [https://your-backend-url.up.railway.app](https://your-backend-url.up.railway.app) |
-${c.image_url}`;
+        : `${API}${c.image_url}`;
     } else if (c.image) {
       imgUrl = c.image.startsWith("http")
         ? c.image
-        : `| Find                                           | Replace                                                                            |
-| ---------------------------------------------- | ---------------------------------------------------------------------------------- |
-| [http://localhost:5500](http://localhost:5500) | [https://your-backend-url.up.railway.app](https://your-backend-url.up.railway.app) |
-/uploads/${c.image}`;
+        : `${API}/uploads/${c.image}`;
     }
 
     return (

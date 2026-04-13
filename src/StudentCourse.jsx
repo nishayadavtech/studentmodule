@@ -2,10 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const API = "| Find                                           | Replace                                                                            |
-| ---------------------------------------------- | ---------------------------------------------------------------------------------- |
-| [http://localhost:5500](http://localhost:5500) | [https://your-backend-url.up.railway.app](https://your-backend-url.up.railway.app) |
-";
+const API = process.env.REACT_APP_API_URL;
 
 export default function StudentCourses() {
   const navigate = useNavigate();

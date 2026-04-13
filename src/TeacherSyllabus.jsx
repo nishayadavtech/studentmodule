@@ -9,7 +9,7 @@ import {
   saveLocalTeacherTopics,
 } from "./teacherDataStorage";
 
-const API = (process.env.REACT_APP_API_URL || "http://localhost:5500").replace(/\/$/, "");
+const API = (process.env.REACT_APP_API_URL || "https://learning-production.up.railway.app").replace(/\/$/, "");
 
 const initialForm = {
   syllabus_id: "",

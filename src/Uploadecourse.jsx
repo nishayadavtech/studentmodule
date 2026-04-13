@@ -9,10 +9,7 @@ import {
   savePurchasedCoursesToLocal,
 } from "./purchaseStorage";
 
-const API = "| Find                                           | Replace                                                                            |
-| ---------------------------------------------- | ---------------------------------------------------------------------------------- |
-| [http://localhost:5500](http://localhost:5500) | [https://your-backend-url.up.railway.app](https://your-backend-url.up.railway.app) |
-";
+const API = "https://learning-production.up.railway.app";
 
 const normalizeArrayPayload = (payload) => {
   if (Array.isArray(payload)) {

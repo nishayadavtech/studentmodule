@@ -29,10 +29,7 @@ export default function TeacherSignup() {
 
     try {
       const res = await axios.post(
-        "| Find                                           | Replace                                                                            |
-| ---------------------------------------------- | ---------------------------------------------------------------------------------- |
-| [http://localhost:5500](http://localhost:5500) | [https://your-backend-url.up.railway.app](https://your-backend-url.up.railway.app) |
-/teacher/signup",
+        "https://learning-production.up.railway.app/teacher/signup",
         formData
       );
 
@@ -53,7 +50,6 @@ export default function TeacherSignup() {
       }
 
       navigate("/teacher/dashboard");
-
     } catch (err) {
       alert(err.response?.data?.message || err.message || "Signup failed");
     }
@@ -62,9 +58,7 @@ export default function TeacherSignup() {
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <form onSubmit={handleSignup} className="bg-white p-8 rounded shadow w-96">
-        <h2 className="text-2xl font-bold mb-6 text-center">
-          Teacher Signup
-        </h2>
+        <h2 className="text-2xl font-bold mb-6 text-center">Teacher Signup</h2>
 
         <input name="id" placeholder="Teacher ID" onChange={handleChange} className="w-full border p-2 mb-2 rounded" required />
         <input name="name" placeholder="Name" onChange={handleChange} className="w-full border p-2 mb-2 rounded" required />
@@ -79,7 +73,6 @@ export default function TeacherSignup() {
           Signup
         </button>
 
-        {/* Login Link  */}
         <p className="text-center mt-4 text-sm">
           Already have an account?{" "}
           <span
@@ -89,7 +82,6 @@ export default function TeacherSignup() {
             Login here
           </span>
         </p>
-
       </form>
     </div>
   );

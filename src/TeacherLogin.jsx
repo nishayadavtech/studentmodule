@@ -19,10 +19,7 @@ export default function TeacherLogin() {
     e.preventDefault();
 
     try {
-      const res = await axios.post("| Find                                           | Replace                                                                            |
-| ---------------------------------------------- | ---------------------------------------------------------------------------------- |
-| [http://localhost:5500](http://localhost:5500) | [https://your-backend-url.up.railway.app](https://your-backend-url.up.railway.app) |
-/teacher/login", {
+      const res = await axios.post("https://learning-production.up.railway.app/teacher/login", {
         email,
         password,
       });
@@ -45,21 +42,16 @@ export default function TeacherLogin() {
 
       navigate("/teacher/dashboard", { replace: true });
     } catch (err) {
-      const message =
-        err.response?.data?.message || err.message || "Login Failed";
+      const message = err.response?.data?.message || err.message || "Login Failed";
       alert(message || "Login Failed");
     }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[linear-gradient(135deg,#eff6ff_0%,#ffffff_45%,#f5f3ff_100%)] px-4">
-      
       <div className="mx-auto grid w-full max-w-4xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-lg lg:grid-cols-[1fr_1fr]">
-
-        {/* LEFT SIDE */}
         <div className="flex items-center justify-center px-5 py-6 sm:px-6">
           <div className="w-full max-w-xs">
-
             <div className="mb-4">
               <p className="text-[10px] font-semibold uppercase tracking-widest text-indigo-600">
                 Instructor Portal
@@ -73,7 +65,6 @@ export default function TeacherLogin() {
             </div>
 
             <form onSubmit={handleLogin} className="space-y-3">
-              
               <div>
                 <label className="text-xs font-semibold text-slate-700">
                   Email Address
@@ -118,11 +109,9 @@ export default function TeacherLogin() {
                 Sign up
               </button>
             </p>
-
           </div>
         </div>
 
-        {/* RIGHT SIDE IMAGE */}
         <div className="relative hidden lg:block">
           <img
             src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80"
@@ -131,7 +120,6 @@ export default function TeacherLogin() {
           />
           <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(30,41,59,0.2),rgba(15,23,42,0.85))]" />
         </div>
-
       </div>
     </div>
   );

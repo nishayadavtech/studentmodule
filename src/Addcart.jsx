@@ -49,18 +49,12 @@ export default function AddCart() {
 
       try {
         const res = await axios.get(
-          `| Find                                           | Replace                                                                            |
-| ---------------------------------------------- | ---------------------------------------------------------------------------------- |
-| [http://localhost:5500](http://localhost:5500) | [https://your-backend-url.up.railway.app](https://your-backend-url.up.railway.app) |
-/cart/viewcart/${user_id}`
+          `https://learning-production.up.railway.app/cart/viewcart/${user_id}`
         );
         cartItems = normalizeCartItems(res.data);
       } catch (pathErr) {
         const res = await axios.get(
-          `| Find                                           | Replace                                                                            |
-| ---------------------------------------------- | ---------------------------------------------------------------------------------- |
-| [http://localhost:5500](http://localhost:5500) | [https://your-backend-url.up.railway.app](https://your-backend-url.up.railway.app) |
-/cart/viewcart?user_id=${user_id}`
+          `https://learning-production.up.railway.app/cart/viewcart?user_id=${user_id}`
         );
         cartItems = normalizeCartItems(res.data);
       }
@@ -80,10 +74,7 @@ export default function AddCart() {
 
   const removeFromCart = async (cartid) => {
     try {
-      await axios.delete(`| Find                                           | Replace                                                                            |
-| ---------------------------------------------- | ---------------------------------------------------------------------------------- |
-| [http://localhost:5500](http://localhost:5500) | [https://your-backend-url.up.railway.app](https://your-backend-url.up.railway.app) |
-/cart/${cartid}`);
+      await axios.delete(`https://learning-production.up.railway.app/cart/${cartid}`);
       await loadCart();
       cartContext?.refreshCartCount?.();
       window.dispatchEvent(new Event("cart-updated"));
@@ -94,10 +85,7 @@ export default function AddCart() {
 
   const getImage = (url) => {
     if (!url) return "https://via.placeholder.com/300x180";
-    return `| Find                                           | Replace                                                                            |
-| ---------------------------------------------- | ---------------------------------------------------------------------------------- |
-| [http://localhost:5500](http://localhost:5500) | [https://your-backend-url.up.railway.app](https://your-backend-url.up.railway.app) |
-${url}`;
+    return `https://learning-production.up.railway.app${url}`;
   };
 
   const totalAmount = cart.reduce(
@@ -140,10 +128,7 @@ ${url}`;
 
           await Promise.all(
             cart.map((item) =>
-              axios.delete(`| Find                                           | Replace                                                                            |
-| ---------------------------------------------- | ---------------------------------------------------------------------------------- |
-| [http://localhost:5500](http://localhost:5500) | [https://your-backend-url.up.railway.app](https://your-backend-url.up.railway.app) |
-/cart/${item.cartid}`)
+              axios.delete(`https://learning-production.up.railway.app/cart/${item.cartid}`)
             )
           );
 

@@ -27,10 +27,7 @@ export default function Coursedetail() {
 
   const fetchCourseDetail = useCallback(async () => {
     try {
-      const res = await axios.get(`| Find                                           | Replace                                                                            |
-| ---------------------------------------------- | ---------------------------------------------------------------------------------- |
-| [http://localhost:5500](http://localhost:5500) | [https://your-backend-url.up.railway.app](https://your-backend-url.up.railway.app) |
-/course/course-detail/${id}`);
+      const res = await axios.get(`https://learning-production.up.railway.app/course/course-detail/${id}`);
       setCourse(res.data);
     } catch (err) {
       console.error(err);
@@ -55,10 +52,7 @@ export default function Coursedetail() {
 
   const handleUpdatePrice = async () => {
     try {
-      await axios.put(`| Find                                           | Replace                                                                            |
-| ---------------------------------------------- | ---------------------------------------------------------------------------------- |
-| [http://localhost:5500](http://localhost:5500) | [https://your-backend-url.up.railway.app](https://your-backend-url.up.railway.app) |
-/course/update-price/${id}`, {
+      await axios.put(`https://learning-production.up.railway.app/course/update-price/${id}`, {
         original_price: newOriginal,
         discount_price: newDiscount,
       });
@@ -117,10 +111,7 @@ export default function Coursedetail() {
   const imgUrl = course.image_url
     ? course.image_url.startsWith("http")
       ? course.image_url
-      : `| Find                                           | Replace                                                                            |
-| ---------------------------------------------- | ---------------------------------------------------------------------------------- |
-| [http://localhost:5500](http://localhost:5500) | [https://your-backend-url.up.railway.app](https://your-backend-url.up.railway.app) |
-${course.image_url}`
+      : `https://learning-production.up.railway.app${course.image_url}`
     : "https://placehold.co/1200x500/e2e8f0/475569?text=Course+Preview";
 
   const displayVideo = videoPreview || placeholderVideo;

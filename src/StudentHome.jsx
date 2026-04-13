@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-const API = "| Find                                           | Replace                                                                            |
-| ---------------------------------------------- | ---------------------------------------------------------------------------------- |
-| [http://localhost:5500](http://localhost:5500) | [https://your-backend-url.up.railway.app](https://your-backend-url.up.railway.app) |
-";
+const API = "https://learning-production.up.railway.app";
 
 export default function StudentHome() {
   const [courses, setCourses] = useState([]);
@@ -16,7 +13,6 @@ export default function StudentHome() {
 
   const fetchCourses = async () => {
     try {
-      // PUBLIC API – no token required
       const res = await axios.get(`${API}/course/all-courses`);
       setCourses(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
@@ -32,7 +28,7 @@ export default function StudentHome() {
     if (!raw) return null;
 
     if (/^https?:\/\//.test(raw)) {
-      return raw + `?t=${new Date().getTime()}`;
+      return `${raw}?t=${new Date().getTime()}`;
     }
 
     return `${API}${raw.startsWith("/") ? "" : "/"}${raw}?t=${new Date().getTime()}`;
@@ -40,7 +36,7 @@ export default function StudentHome() {
 
   return (
     <div className="container py-5">
-      <h2 className="mb-4 fw-bold">🎓 All Courses</h2>
+      <h2 className="mb-4 fw-bold">All Courses</h2>
 
       {loading ? (
         <p>Loading...</p>
@@ -52,8 +48,6 @@ export default function StudentHome() {
             return (
               <div key={course.course_id} className="col-md-4">
                 <div className="card h-100 shadow-sm">
-
-                  {/* Image */}
                   <div style={{ height: "200px", overflow: "hidden" }}>
                     {imgUrl ? (
                       <img
@@ -62,7 +56,7 @@ export default function StudentHome() {
                         style={{
                           width: "100%",
                           height: "100%",
-                          objectFit: "cover"
+                          objectFit: "cover",
                         }}
                       />
                     ) : (
@@ -72,7 +66,6 @@ export default function StudentHome() {
                     )}
                   </div>
 
-                  {/* Content */}
                   <div className="card-body d-flex flex-column">
                     <h5 className="fw-bold">{course.course_name}</h5>
 
@@ -82,11 +75,10 @@ export default function StudentHome() {
 
                     <div className="mt-auto">
                       <p className="fw-bold text-primary">
-                        ₹{course.discount_price || course.original_price || 0}
+                        Rs. {course.discount_price || course.original_price || 0}
                       </p>
                     </div>
                   </div>
-
                 </div>
               </div>
             );

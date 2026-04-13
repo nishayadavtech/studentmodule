@@ -18,10 +18,10 @@ export default function Login() {
     e.preventDefault();
 
     try {
-      const res = await axios.post("| Find                                           | Replace                                                                            |
-| ---------------------------------------------- | ---------------------------------------------------------------------------------- |
-| [http://localhost:5500](http://localhost:5500) | [https://your-backend-url.up.railway.app](https://your-backend-url.up.railway.app) |
-/student/login", form);
+      const res = await axios.post(
+        "https://learning-production.up.railway.app/student/login",
+        form
+      );
 
       localStorage.setItem("student", JSON.stringify(res.data.student));
       window.dispatchEvent(new Event("cart-updated"));
@@ -39,10 +39,7 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[radial-gradient(circle_at_top,_#fef3c7,_#ffffff_40%,_#e0f2fe_100%)] px-4">
-      
       <div className="mx-auto grid w-full max-w-4xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-lg lg:grid-cols-[1fr_1fr]">
-        
-        {/* IMAGE SIDE */}
         <div className="relative hidden lg:block">
           <img
             src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=80"
@@ -52,10 +49,8 @@ export default function Login() {
           <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(15,23,42,0.2),rgba(15,23,42,0.85))]" />
         </div>
 
-        {/* FORM SIDE */}
         <div className="flex items-center justify-center px-5 py-6 sm:px-6">
           <div className="w-full max-w-xs">
-
             <div className="mb-4">
               <p className="text-[10px] font-semibold uppercase tracking-widest text-violet-600">
                 TeachHub
@@ -69,7 +64,6 @@ export default function Login() {
             </div>
 
             <form onSubmit={handleLogin} className="space-y-3">
-              
               <div>
                 <label className="text-xs font-semibold text-slate-700">
                   Email Address
@@ -112,10 +106,8 @@ export default function Login() {
                 Signup
               </Link>
             </p>
-
           </div>
         </div>
-
       </div>
     </div>
   );

@@ -74,10 +74,7 @@ export default function Navbar() {
 
     try {
       const res = await axios.get(
-        `| Find                                           | Replace                                                                            |
-| ---------------------------------------------- | ---------------------------------------------------------------------------------- |
-| [http://localhost:5500](http://localhost:5500) | [https://your-backend-url.up.railway.app](https://your-backend-url.up.railway.app) |
-/course/search?search=${encodeURIComponent(
+        `https://learning-production.up.railway.app/course/search?search=${encodeURIComponent(
           value
         )}`
       );
@@ -167,10 +164,7 @@ export default function Navbar() {
                 >
                   {item.image_url && (
                     <img
-                      src={`| Find                                           | Replace                                                                            |
-| ---------------------------------------------- | ---------------------------------------------------------------------------------- |
-| [http://localhost:5500](http://localhost:5500) | [https://your-backend-url.up.railway.app](https://your-backend-url.up.railway.app) |
-${item.image_url}`}
+                      src={`https://learning-production.up.railway.app${item.image_url}`}
                       alt={item.course_name}
                       className="h-10 w-10 rounded-md object-cover md:h-14 md:w-14"
                     />

@@ -2,11 +2,7 @@ import React, { useEffect, useState, useMemo, useRef } from "react";
 import axios from "axios";
 
 export default function StudentCourseSearch() {
-  const baseUrl = "| Find                                           | Replace                                                                            |
-| ---------------------------------------------- | ---------------------------------------------------------------------------------- |
-| [http://localhost:5500](http://localhost:5500) | [https://your-backend-url.up.railway.app](https://your-backend-url.up.railway.app) |
-";
-
+  const API = process.env.REACT_APP_API_URL || "https://learning-production.up.railway.app";
   /* ---------- STATES ---------- */
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -25,7 +21,7 @@ export default function StudentCourseSearch() {
   useEffect(() => {
     let mounted = true;
 
-    axios.get(`${baseUrl}/course`)
+    axios.get(`${API}/course`)
       .then(res => mounted && setCourses(res.data || []))
       .catch(() => {})
       .finally(() => mounted && setLoading(false));
@@ -37,8 +33,8 @@ export default function StudentCourseSearch() {
   const getImageSrc = (url) => {
     if (!url) return "/uploads/default.png";
     if (url.startsWith("http")) return url;
-    if (url.startsWith("/")) return baseUrl + url;
-    return `${baseUrl}/uploads/${url}`;
+    if (url.startsWith("/")) return API + url;
+    return `${API}/uploads/${url}`;
   };
 
   /* ---------- FILTER COURSES ---------- */
@@ -86,13 +82,13 @@ export default function StudentCourseSearch() {
         window.history.pushState({}, "", `/student/course/${id}`);
       }
 
-      const res = await axios.get(`${baseUrl}/course/${id}`);
+      const res = await axios.get(`${API}/course/${id}`);
 
       let course = res.data.course || res.data;
       let teachers = res.data.teachers || [];
 
       if (!res.data.teachers && course?.course_id) {
-        const tRes = await axios.get(`${baseUrl}/teachers?course_id=${course.course_id}`);
+        const tRes = await axios.get(`${API}/teachers?course_id=${course.course_id}`);
         teachers = tRes.data || [];
       }
 

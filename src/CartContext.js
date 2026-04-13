@@ -3,6 +3,8 @@ import axios from "axios";
 
 export const CartContext = createContext();
 
+const API = "https://learning-production.up.railway.app";
+
 export const CartProvider = ({ children }) => {
   const [cartCount, setCartCount] = useState(0);
 
@@ -16,12 +18,7 @@ export const CartProvider = ({ children }) => {
     }
 
     try {
-      const res = await axios.get(
-        `| Find                                           | Replace                                                                            |
-| ---------------------------------------------- | ---------------------------------------------------------------------------------- |
-| [http://localhost:5500](http://localhost:5500) | [https://your-backend-url.up.railway.app](https://your-backend-url.up.railway.app) |
-/cart/viewcart/${user_id}`
-      );
+      const res = await axios.get(`${API}/cart/viewcart/${user_id}`);
       setCartCount(Array.isArray(res.data) ? res.data.length : 0);
     } catch (err) {
       console.log("Cart count error:", err);

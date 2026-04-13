@@ -16,10 +16,7 @@ export default function Signup() {
     }
 
     try {
-      await axios.post("| Find                                           | Replace                                                                            |
-| ---------------------------------------------- | ---------------------------------------------------------------------------------- |
-| [http://localhost:5500](http://localhost:5500) | [https://your-backend-url.up.railway.app](https://your-backend-url.up.railway.app) |
-/student/signup", {
+      await axios.post("https://learning-production.up.railway.app/student/signup", {
         name,
         email,
         password,
@@ -37,13 +34,9 @@ export default function Signup() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
       <div className="bg-white w-full max-w-md rounded-2xl shadow-xl p-8">
-        <h2 className="text-3xl font-bold text-center mb-2">
-          Student Signup
-        </h2>
+        <h2 className="text-3xl font-bold text-center mb-2">Student Signup</h2>
 
-        <p className="text-center text-gray-500 mb-6">
-          Create your account
-        </p>
+        <p className="text-center text-gray-500 mb-6">Create your account</p>
 
         <input
           type="text"
