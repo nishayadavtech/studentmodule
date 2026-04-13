@@ -9,10 +9,7 @@ import {
   saveLocalTeacherTopics,
 } from "./teacherDataStorage";
 
-const API = "| Find                                           | Replace                                                                            |
-| ---------------------------------------------- | ---------------------------------------------------------------------------------- |
-| [http://localhost:5500](http://localhost:5500) | [https://your-backend-url.up.railway.app](https://your-backend-url.up.railway.app) |
-";
+const API = (process.env.REACT_APP_API_URL || "http://localhost:5500").replace(/\/$/, "");
 
 const initialForm = {
   syllabus_id: "",
@@ -39,17 +36,13 @@ const fileToDataUrl = async (file) => {
     const formData = new FormData();
     formData.append("video", file);
 
-    const res = await fetch("| Find                                           | Replace                                                                            |
-| ---------------------------------------------- | ---------------------------------------------------------------------------------- |
-| [http://localhost:5500](http://localhost:5500) | [https://your-backend-url.up.railway.app](https://your-backend-url.up.railway.app) |
-/upload-video", {
+    const res = await fetch(`${API}/upload-video`, {
       method: "POST",
       body: formData,
     });
 
     const data = await res.json();
-
-    return data.video_url; // 👈 अब base64 नहीं, URL आएगा
+    return data.video_url;
   } catch (error) {
     console.error("Upload error:", error);
     throw new Error("Video upload failed");
@@ -126,8 +119,7 @@ const TeacherSyllabus = () => {
 
   const persistLocalTopics = (updater) => {
     setLocalTopics((currentTopics) => {
-      const nextTopics =
-        typeof updater === "function" ? updater(currentTopics) : updater;
+      const nextTopics = typeof updater === "function" ? updater(currentTopics) : updater;
       saveLocalTeacherTopics(nextTopics);
       return nextTopics;
     });
@@ -180,7 +172,10 @@ const TeacherSyllabus = () => {
   );
 
   const topicCount = syllabusData.length;
-  const tutorialCount = syllabusData.reduce((total, topic) => total + (topic.videos?.length || 0), 0);
+  const tutorialCount = syllabusData.reduce(
+    (total, topic) => total + (topic.videos?.length || 0),
+    0
+  );
 
   const getCourseName = (courseId) => {
     const course = courses.find((item) => String(item.course_id) === String(courseId));
@@ -264,43 +259,42 @@ const TeacherSyllabus = () => {
       editorFileInputRef.current.value = "";
     }
   };
+
   const handleTopicVideoUpload = async (topic, event) => {
-  const file = event.target.files?.[0];
-  if (!file) return;
+    const file = event.target.files?.[0];
+    if (!file) return;
 
-  try {
-    const dataUrl = await fileToDataUrl(file);
+    try {
+      const dataUrl = await fileToDataUrl(file);
 
-    const nextVideo = {
-      video_id: `video-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
-      video_name: file.name,
-      video_url: dataUrl,
-    };
+      const nextVideo = {
+        video_id: `video-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+        video_name: file.name,
+        video_url: dataUrl,
+      };
 
-    // 🔥 FIX START
-    const updatedVideos = [...(topic.videos || []), nextVideo];
+      const updatedVideos = [...(topic.videos || []), nextVideo];
 
-    upsertTopic({
-      ...topic,
-      video_name: updatedVideos[0]?.video_name || file.name,
-      video_url: updatedVideos[0]?.video_url || nextVideo.video_url,
-      videos: updatedVideos,
-    });
-    // 🔥 FIX END
+      upsertTopic({
+        ...topic,
+        video_name: updatedVideos[0]?.video_name || file.name,
+        video_url: updatedVideos[0]?.video_url || nextVideo.video_url,
+        videos: updatedVideos,
+      });
 
-    setActivePreviewByTopic((current) => ({
-      ...current,
-      [String(topic.syllabus_id)]: nextVideo.video_id,
-    }));
+      setActivePreviewByTopic((current) => ({
+        ...current,
+        [String(topic.syllabus_id)]: nextVideo.video_id,
+      }));
 
-    setError("");
-  } catch (uploadError) {
-    console.error(uploadError);
-    setError("Video upload failed. Please try again.");
-  } finally {
-    event.target.value = "";
-  }
-};
+      setError("");
+    } catch (uploadError) {
+      console.error(uploadError);
+      setError("Video upload failed. Please try again.");
+    } finally {
+      event.target.value = "";
+    }
+  };
 
   const handleEdit = (topic) => {
     setEditMode(true);
@@ -374,8 +368,7 @@ const TeacherSyllabus = () => {
     }
 
     const topicId =
-      formData.syllabus_id ||
-      `local-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+      formData.syllabus_id || `local-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
 
     upsertTopic({
       ...formData,
@@ -431,7 +424,9 @@ const TeacherSyllabus = () => {
                     className="rounded-4 p-2 p-sm-3 h-100 shadow-sm"
                     style={{ background: "#eff6ff", border: "1px solid #bfdbfe" }}
                   >
-                    <div className="small text-muted mb-1" style={{ fontSize: '0.75rem' }}>Courses</div>
+                    <div className="small text-muted mb-1" style={{ fontSize: "0.75rem" }}>
+                      Courses
+                    </div>
                     <div className="fw-bold fs-4 fs-sm-3" style={{ color: "#0f172a" }}>
                       {courses.length}
                     </div>
@@ -442,7 +437,9 @@ const TeacherSyllabus = () => {
                     className="rounded-4 p-2 p-sm-3 h-100 shadow-sm"
                     style={{ background: "#fff7ed", border: "1px solid #fed7aa" }}
                   >
-                    <div className="small text-muted mb-1" style={{ fontSize: '0.75rem' }}>Topics</div>
+                    <div className="small text-muted mb-1" style={{ fontSize: "0.75rem" }}>
+                      Topics
+                    </div>
                     <div className="fw-bold fs-4 fs-sm-3" style={{ color: "#0f172a" }}>
                       {topicCount}
                     </div>
@@ -453,7 +450,9 @@ const TeacherSyllabus = () => {
                     className="rounded-4 p-2 p-sm-3 h-100 shadow-sm"
                     style={{ background: "#ecfdf5", border: "1px solid #a7f3d0" }}
                   >
-                    <div className="small text-muted mb-1" style={{ fontSize: '0.75rem' }}>Tutorials</div>
+                    <div className="small text-muted mb-1" style={{ fontSize: "0.75rem" }}>
+                      Tutorials
+                    </div>
                     <div className="fw-bold fs-4 fs-sm-3" style={{ color: "#0f172a" }}>
                       {tutorialCount}
                     </div>
@@ -594,10 +593,9 @@ const TeacherSyllabus = () => {
                 const hasVideo = topicVideos.length > 0 || Boolean(item.video_url || item.video_name);
                 const selectedPreviewId = activePreviewByTopic[String(item.syllabus_id)];
                 const previewVideo =
-                  topicVideos.find(
-                    (video) => String(video.video_id) === String(selectedPreviewId)
-                  // ) || topicVideos[0] || null;
-                   ) || topicVideos[topicVideos.length - 1] || null;
+                  topicVideos.find((video) => String(video.video_id) === String(selectedPreviewId)) ||
+                  topicVideos[topicVideos.length - 1] ||
+                  null;
 
                 return (
                   <Card
