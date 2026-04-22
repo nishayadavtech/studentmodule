@@ -305,7 +305,7 @@ export default function Navbar() {
                   onClick={() => setIsMobileMenuOpen(false)}
                   className="w-full rounded-md bg-purple-600 py-2 text-center text-sm font-medium text-white"
                 >
-                  Student Signup
+                  Signup
                 </Link>
               </div>
             ) : (
