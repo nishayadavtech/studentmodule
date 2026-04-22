@@ -305,7 +305,7 @@ export default function Navbar() {
                   onClick={() => setIsMobileMenuOpen(false)}
                   className="w-full rounded-md bg-purple-600 py-2 text-center text-sm font-medium text-white"
                 >
-                  Signup
+                  Student Signup
                 </Link>
               </div>
             ) : (
@@ -331,7 +331,7 @@ export default function Navbar() {
                 onClick={handleTeacherLogout}
                 className="w-full rounded-md border border-blue-500 py-2 text-sm font-medium text-blue-600"
               >
-                Teacher Logout
+                Teacher Logout 
               </button>
             ) }
           </div>
