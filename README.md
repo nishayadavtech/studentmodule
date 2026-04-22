@@ -2,6 +2,20 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Local API Notes
+
+In development, the app now uses a CRA proxy by default. Frontend requests go to `/api/...` on `http://localhost:3000`, and the dev server forwards them to `REACT_APP_API_PROXY_TARGET`.
+
+This helps avoid browser CORS errors when the backend is hosted on another origin like Railway.
+
+Current local setup uses:
+
+`REACT_APP_API_PROXY_TARGET=http://localhost:5500`
+
+If you want the browser to call the backend directly in development, set:
+
+`REACT_APP_USE_DEV_PROXY=false`
+
 ## Available Scripts
 
 In the project directory, you can run:

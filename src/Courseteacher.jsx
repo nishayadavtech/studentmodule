@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-
-const API = "https://learning-production.up.railway.app";
+import API from "./api";
 
 const TeacherDashboard = () => {
   const [courses, setCourses] = useState([]);

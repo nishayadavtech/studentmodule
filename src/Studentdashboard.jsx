@@ -13,6 +13,8 @@ import {
   getLocalPaymentHistory,
   getLocalPurchasedCourses,
 } from "./purchaseStorage";
+import { apiUrl, resolveAssetUrl } from "./api";
+import { clearStudentSession, getStoredStudent } from "./studentDataStorage";
 
 export default function Studentdashboard() {
   const [studentInfo, setStudentInfo] = useState(null);
@@ -53,9 +55,7 @@ export default function Studentdashboard() {
       return rawImage;
     }
 
-    return `https://learning-production.up.railway.app${
-      rawImage.startsWith("/") ? rawImage : `/${rawImage}`
-    }`;
+    return resolveAssetUrl(rawImage);
   }, []);
 
   const mergeCoursesById = useCallback((primaryCourses, fallbackCourses) => {
@@ -74,7 +74,7 @@ export default function Studentdashboard() {
 
   const fetchStudentDashboardData = useCallback(async () => {
     try {
-      const student = JSON.parse(localStorage.getItem("student") || "null");
+      const student = getStoredStudent();
 
       if (!student?.student_id) {
         localStorage.setItem("postLoginRedirectPath", "/dashboard");
@@ -89,13 +89,11 @@ export default function Studentdashboard() {
       const paymentCourses = paymentHistory.map((item) => item.course).filter(Boolean);
 
       const [purchaseResult, cartResult] = await Promise.allSettled([
-        axios.get(`https://learning-production.up.railway.app/course/my-purchases/${student.student_id}`),
+        axios.get(apiUrl(`/course/my-purchases/${student.student_id}`)),
         axios
-          .get(`https://learning-production.up.railway.app/cart/viewcart/${student.student_id}`)
+          .get(apiUrl(`/cart/viewcart/${student.student_id}`))
           .catch(() =>
-            axios.get(
-              `https://learning-production.up.railway.app/cart/viewcart?user_id=${student.student_id}`
-            )
+            axios.get(apiUrl(`/cart/viewcart?user_id=${student.student_id}`))
           ),
       ]);
 
@@ -161,9 +159,7 @@ export default function Studentdashboard() {
   );
 
   const handleLogout = () => {
-    localStorage.removeItem("student");
-    localStorage.removeItem("postLoginRedirectPath");
-    localStorage.removeItem("pendingCartCourseId");
+    clearStudentSession();
     navigate("/login");
   };
 

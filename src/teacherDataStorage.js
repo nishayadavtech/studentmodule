@@ -176,6 +176,13 @@ const normalizeTopicVideo = (video, index = 0) => {
   };
 };
 
+const normalizeTopicPdf = (topic) => {
+  return {
+    pdf_name: topic?.pdf_name || topic?.pdfName || topic?.document_name || "",
+    pdf_url: topic?.pdf_url || topic?.pdfUrl || topic?.document_url || "",
+  };
+};
+
 const normalizeTopicVideos = (topic) => {
   if (Array.isArray(topic?.videos) && topic.videos.length > 0) {
     return topic.videos
@@ -208,6 +215,7 @@ export const normalizeTopic = (topic) => {
 
   const videos = normalizeTopicVideos(topic);
   const primaryVideo = videos[0] || { video_name: "", video_url: "" };
+  const pdf = normalizeTopicPdf(topic);
 
   return {
     syllabus_id: syllabusId,
@@ -217,6 +225,8 @@ export const normalizeTopic = (topic) => {
     video_url: primaryVideo.video_url,
     video_name: primaryVideo.video_name,
     videos,
+    pdf_name: pdf.pdf_name,
+    pdf_url: pdf.pdf_url,
     updated_at: topic?.updated_at || new Date().toISOString(),
     isLocalOnly: Boolean(topic?.isLocalOnly),
     deleted: Boolean(topic?.deleted),

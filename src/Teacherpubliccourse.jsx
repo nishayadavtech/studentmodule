@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import { CartContext } from "./CartContext";
@@ -8,6 +8,9 @@ import {
   savePaymentHistoryToLocal,
   savePurchasedCoursesToLocal,
 } from "./purchaseStorage";
+import { apiUrl, resolveAssetUrl } from "./api";
+import { getStoredStudent } from "./studentDataStorage";
+import PaginationControls from "./PaginationControls";
 
 export default function AllCourses() {
   const [courses, setCourses] = useState([]);
@@ -17,12 +20,14 @@ export default function AllCourses() {
   const [enrollingId, setEnrollingId] = useState(null);
   const [cartCourseIds, setCartCourseIds] = useState([]);
   const [purchasedCourseIds, setPurchasedCourseIds] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const coursesPerPage = 6;
 
   const navigate = useNavigate();
   const location = useLocation();
   const cartContext = useContext(CartContext);
 
-  const student = JSON.parse(localStorage.getItem("student") || "null");
+  const student = getStoredStudent();
   const student_id = student?.student_id;
 
   const getFallbackImage = useCallback((courseName = "Course") => {
@@ -42,16 +47,15 @@ export default function AllCourses() {
       return rawImage;
     }
 
-    return `https://learning-production.up.railway.app${
-      rawImage.startsWith("/") ? rawImage : `/${rawImage}`
-    }`;
+    return resolveAssetUrl(rawImage);
   }, [getFallbackImage]);
 
   const fetchCourses = async () => {
     setLoading(true);
     try {
-      const res = await axios.get("https://learning-production.up.railway.app/course/all-courses");
+      const res = await axios.get(apiUrl("/course/all-courses"));
       setCourses(Array.isArray(res.data) ? res.data : []);
+      setCurrentPage(1);
     } catch (err) {
       console.error(err);
       setError("Failed to load courses");
@@ -76,11 +80,9 @@ export default function AllCourses() {
 
       const [cartResult, purchaseResult] = await Promise.allSettled([
         axios
-          .get(`https://learning-production.up.railway.app/cart/viewcart/${student_id}`)
-          .catch(() =>
-            axios.get(`https://learning-production.up.railway.app/cart/viewcart?user_id=${student_id}`)
-          ),
-        axios.get(`https://learning-production.up.railway.app/course/my-purchases/${student_id}`),
+          .get(apiUrl(`/cart/viewcart/${student_id}`))
+          .catch(() => axios.get(apiUrl(`/cart/viewcart?user_id=${student_id}`))),
+        axios.get(apiUrl(`/course/my-purchases/${student_id}`)),
       ]);
 
       const cartRes = cartResult.status === "fulfilled" ? cartResult.value : null;
@@ -140,7 +142,7 @@ export default function AllCourses() {
 
       setAddingId(course_id);
 
-      await axios.post("https://learning-production.up.railway.app/cart/addtocart", {
+      await axios.post(apiUrl("/cart/addtocart"), {
         course_id,
         user_id: student_id,
       });
@@ -214,10 +216,8 @@ export default function AllCourses() {
 
           try {
             const cartRes = await axios
-              .get(`https://learning-production.up.railway.app/cart/viewcart/${student_id}`)
-              .catch(() =>
-                axios.get(`https://learning-production.up.railway.app/cart/viewcart?user_id=${student_id}`)
-              );
+              .get(apiUrl(`/cart/viewcart/${student_id}`))
+              .catch(() => axios.get(apiUrl(`/cart/viewcart?user_id=${student_id}`)));
 
             const cartItems = Array.isArray(cartRes?.data)
               ? cartRes.data
@@ -232,7 +232,7 @@ export default function AllCourses() {
             );
 
             if (existingCartItem?.cartid) {
-              await axios.delete(`https://learning-production.up.railway.app/cart/${existingCartItem.cartid}`);
+              await axios.delete(apiUrl(`/cart/${existingCartItem.cartid}`));
             }
           } catch (cleanupError) {
             console.error("Cart cleanup after enroll failed:", cleanupError);
@@ -304,6 +304,13 @@ export default function AllCourses() {
     }
   }, [courses, handleEnroll, student_id]);
 
+  const paginatedCourses = useMemo(() => {
+    const startIndex = (currentPage - 1) * coursesPerPage;
+    return courses.slice(startIndex, startIndex + coursesPerPage);
+  }, [courses, currentPage]);
+
+  const totalPages = Math.max(1, Math.ceil(courses.length / coursesPerPage));
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-8">
       <h1 className="mb-8 text-center text-3xl font-bold">All Courses</h1>
@@ -314,7 +321,7 @@ export default function AllCourses() {
 
       <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
         {!loading &&
-          courses.map((c) => {
+          paginatedCourses.map((c) => {
             const coursePrice = getCoursePrice(c);
             const originalPrice = Number(
               c?.original_price ?? c?.originalPrice ?? c?.price ?? 0
@@ -401,6 +408,11 @@ export default function AllCourses() {
             );
           })}
       </div>
+      <PaginationControls
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={setCurrentPage}
+      />
     </div>
   );
 }

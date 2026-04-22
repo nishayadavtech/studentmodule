@@ -7,6 +7,8 @@ import {
   savePaymentHistoryToLocal,
   savePurchasedCoursesToLocal,
 } from "./purchaseStorage";
+import { apiUrl, resolveAssetUrl } from "./api";
+import { getStoredStudent } from "./studentDataStorage";
 
 export default function AddCart() {
   const [cart, setCart] = useState([]);
@@ -36,7 +38,7 @@ export default function AddCart() {
 
   const loadCart = useCallback(async () => {
     try {
-      const student = JSON.parse(localStorage.getItem("student") || "null");
+      const student = getStoredStudent();
       const user_id = student?.student_id;
 
       if (!user_id) {
@@ -48,14 +50,10 @@ export default function AddCart() {
       let cartItems = [];
 
       try {
-        const res = await axios.get(
-          `https://learning-production.up.railway.app/cart/viewcart/${user_id}`
-        );
+        const res = await axios.get(apiUrl(`/cart/viewcart/${user_id}`));
         cartItems = normalizeCartItems(res.data);
       } catch (pathErr) {
-        const res = await axios.get(
-          `https://learning-production.up.railway.app/cart/viewcart?user_id=${user_id}`
-        );
+        const res = await axios.get(apiUrl(`/cart/viewcart?user_id=${user_id}`));
         cartItems = normalizeCartItems(res.data);
       }
 
@@ -74,7 +72,7 @@ export default function AddCart() {
 
   const removeFromCart = async (cartid) => {
     try {
-      await axios.delete(`https://learning-production.up.railway.app/cart/${cartid}`);
+      await axios.delete(apiUrl(`/cart/${cartid}`));
       await loadCart();
       cartContext?.refreshCartCount?.();
       window.dispatchEvent(new Event("cart-updated"));
@@ -84,8 +82,7 @@ export default function AddCart() {
   };
 
   const getImage = (url) => {
-    if (!url) return "https://via.placeholder.com/300x180";
-    return `https://learning-production.up.railway.app${url}`;
+    return resolveAssetUrl(url, "https://via.placeholder.com/300x180");
   };
 
   const totalAmount = cart.reduce(
@@ -102,7 +99,7 @@ export default function AddCart() {
 
       setLoading(true);
 
-      const student = JSON.parse(localStorage.getItem("student") || "null");
+      const student = getStoredStudent();
 
       if (!window.Razorpay) {
         alert("Razorpay SDK not loaded. Check index.html");
@@ -128,7 +125,7 @@ export default function AddCart() {
 
           await Promise.all(
             cart.map((item) =>
-              axios.delete(`https://learning-production.up.railway.app/cart/${item.cartid}`)
+              axios.delete(apiUrl(`/cart/${item.cartid}`))
             )
           );
 

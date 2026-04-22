@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { extractTeacherAuthPayload, saveTeacherProfile } from "./teacherDataStorage";
+import { apiUrl } from "./api";
 
 export default function TeacherSignup() {
   const navigate = useNavigate();
@@ -28,10 +29,7 @@ export default function TeacherSignup() {
     e.preventDefault();
 
     try {
-      const res = await axios.post(
-        "https://learning-production.up.railway.app/teacher/signup",
-        formData
-      );
+      const res = await axios.post(apiUrl("/teacher/signup"), formData);
 
       const { token, teacher } = extractTeacherAuthPayload(res.data);
 

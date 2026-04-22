@@ -1,8 +1,9 @@
 import React, { useEffect, useState, useMemo, useRef } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import API from "./api";
 
 export default function StudentCourseSearch() {
-  const API = process.env.REACT_APP_API_URL || "https://learning-production.up.railway.app";
   /* ---------- STATES ---------- */
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -16,6 +17,7 @@ export default function StudentCourseSearch() {
   const [errorSelected, setErrorSelected] = useState(null);
 
   const originalPathRef = useRef(window.location.pathname);
+  const navigate = useNavigate();
 
   /* ---------- FETCH ALL COURSES ---------- */
   useEffect(() => {
@@ -31,7 +33,7 @@ export default function StudentCourseSearch() {
 
   /* ---------- IMAGE URL ---------- */
   const getImageSrc = (url) => {
-    if (!url) return "/uploads/default.png";
+    if (!url) return `${API}/uploads/default.png`;
     if (url.startsWith("http")) return url;
     if (url.startsWith("/")) return API + url;
     return `${API}/uploads/${url}`;
@@ -56,20 +58,6 @@ export default function StudentCourseSearch() {
     }).slice(0, resultsLimit);
 
   }, [courses, searchText, mode, resultsLimit]);
-
-  /* ---------- URL CHECK ---------- */
-  const checkUrl = async () => {
-    const match = window.location.pathname.match(/\/student\/course\/([^/]+)/);
-    if (match) {
-      await showCourse(match[1], false);
-    }
-  };
-
-  useEffect(() => {
-    checkUrl();
-    window.addEventListener("popstate", checkUrl);
-    return () => window.removeEventListener("popstate", checkUrl);
-  }, []);
 
   /* ---------- SHOW COURSE MODAL ---------- */
   const showCourse = async (id, push = true) => {
@@ -100,6 +88,20 @@ export default function StudentCourseSearch() {
     }
   };
 
+  /* ---------- URL CHECK ---------- */
+  useEffect(() => {
+    const checkUrl = async () => {
+      const match = window.location.pathname.match(/\/student\/course\/([^/]+)/);
+      if (match) {
+        await showCourse(match[1], false);
+      }
+    };
+
+    checkUrl();
+    window.addEventListener("popstate", checkUrl);
+    return () => window.removeEventListener("popstate", checkUrl);
+  }, []);
+
   /* ---------- CLOSE MODAL ---------- */
   const closeModal = () => {
     setSelected(null);
@@ -111,12 +113,8 @@ export default function StudentCourseSearch() {
   };
 
   /* ---------- OPEN COURSE ---------- */
-  const openCourse = (id, item) => {
-    if (item?.teacher_name) {
-      window.location.href = `/teacher/name/${item.teacher_name}`;
-    } else {
-      window.location.href = `/student/course/${id}`;
-    }
+  const openCourse = (id) => {
+    navigate(`/student/course/${id}`);
   };
 
   /* ---------- UI ---------- */

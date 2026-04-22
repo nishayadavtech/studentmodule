@@ -35,13 +35,14 @@ import Trendingcourse from "./Trendingcourse";
 import Footer from "./Footer";
 import Uploadecourse from "./Uploadecourse";
 import Studentdashboard from "./Studentdashboard";
+import { getStoredStudent } from "./studentDataStorage";
 
 /* ================= PROTECTED ROUTES ================= */
 
 // Student Protected
 const StudentProtected = ({ children }) => {
-  const student = localStorage.getItem("student");
-  if (student) {
+  const student = getStoredStudent();
+  if (student?.student_id) {
     return children;
   }
 

@@ -4,6 +4,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { AiOutlineSearch, AiOutlineMenu, AiOutlineClose } from "react-icons/ai";
 import { FaGlobe, FaShoppingCart } from "react-icons/fa";
 import { CartContext } from "./CartContext";
+import { apiUrl, resolveAssetUrl } from "./api";
+import { clearStudentSession, getStoredStudent } from "./studentDataStorage";
 
 export default function Navbar() {
   const [query, setQuery] = useState("");
@@ -18,7 +20,7 @@ export default function Navbar() {
   const cartCount = context?.cartCount || 0;
 
   const teacherToken = localStorage.getItem("teacherToken");
-  const student = JSON.parse(localStorage.getItem("student") || "null");
+  const student = getStoredStudent();
   const isStudentLoggedIn = !!student;
   const user_id = student?.student_id;
   const refreshCartCount = context?.refreshCartCount;
@@ -48,10 +50,7 @@ export default function Navbar() {
   }, [refreshCartCount, setCartCount, user_id]);
 
   const handleStudentLogout = () => {
-    localStorage.removeItem("student");
-    localStorage.removeItem("studentToken");
-    localStorage.removeItem("postLoginRedirectPath");
-    localStorage.removeItem("pendingCartCourseId");
+    clearStudentSession();
     setCartCount?.(0);
     navigate("/login");
     setIsMobileMenuOpen(false);
@@ -73,11 +72,7 @@ export default function Navbar() {
     }
 
     try {
-      const res = await axios.get(
-        `https://learning-production.up.railway.app/course/search?search=${encodeURIComponent(
-          value
-        )}`
-      );
+      const res = await axios.get(apiUrl(`/course/search?search=${encodeURIComponent(value)}`));
       setResults(res.data || []);
     } catch (err) {
       console.error(err);
@@ -110,29 +105,38 @@ export default function Navbar() {
           </Link>
 
           <div className="relative hidden md:block">
-            <button
-              onClick={() => setShowExplore(!showExplore)}
-              className="text-sm font-medium text-gray-700 transition hover:text-purple-600"
-            >
-              Explore
+              <button
+                onClick={() => setShowExplore(!showExplore)}
+                className="text-sm font-medium text-gray-700 transition hover:text-purple-600"
+              >
+                Explore
             </button>
 
             {showExplore && (
               <div className="absolute left-0 top-10 w-48 rounded-md border bg-white p-3 shadow-lg">
                 <p
-                  onClick={() => { navigate("/category/development"); setShowExplore(false); }}
+                  onClick={() => {
+                    navigate("/student/search");
+                    setShowExplore(false);
+                  }}
                   className="cursor-pointer rounded p-2 text-sm hover:bg-gray-100"
                 >
                   Development
                 </p>
                 <p
-                  onClick={() => { navigate("/category/design"); setShowExplore(false); }}
+                  onClick={() => {
+                    navigate("/student/search");
+                    setShowExplore(false);
+                  }}
                   className="cursor-pointer rounded p-2 text-sm hover:bg-gray-100"
                 >
                   Design
                 </p>
                 <p
-                  onClick={() => { navigate("/category/business"); setShowExplore(false); }}
+                  onClick={() => {
+                    navigate("/student/search");
+                    setShowExplore(false);
+                  }}
                   className="cursor-pointer rounded p-2 text-sm hover:bg-gray-100"
                 >
                   Business
@@ -164,7 +168,7 @@ export default function Navbar() {
                 >
                   {item.image_url && (
                     <img
-                      src={`https://learning-production.up.railway.app${item.image_url}`}
+                      src={resolveAssetUrl(item.image_url)}
                       alt={item.course_name}
                       className="h-10 w-10 rounded-md object-cover md:h-14 md:w-14"
                     />
@@ -203,6 +207,15 @@ export default function Navbar() {
           </Link>
 
           <div className="hidden items-center gap-3 lg:flex">
+            {!teacherToken && (
+              <Link
+                to="/teacher/login"
+                className="rounded-md border border-blue-200 px-4 py-2 text-sm font-medium text-blue-700 transition hover:bg-blue-50"
+              >
+                Teacher Login
+              </Link>
+            )}
+
             {!isStudentLoggedIn && (
               <>
                 <Link
@@ -240,12 +253,21 @@ export default function Navbar() {
             )}
 
             {teacherToken && (
-              <button
-                onClick={handleTeacherLogout}
-                className="rounded-md border border-blue-500 px-4 py-2 text-sm font-medium text-blue-600 transition hover:bg-blue-50"
-              >
-                Teacher Logout
-              </button>
+              <>
+                <Link
+                  to="/teacher/dashboard"
+                  className="rounded-md border border-blue-200 px-4 py-2 text-sm font-medium text-blue-700 transition hover:bg-blue-50"
+                >
+                  Teacher Dashboard
+                </Link>
+
+                <button
+                  onClick={handleTeacherLogout}
+                  className="rounded-md border border-blue-500 px-4 py-2 text-sm font-medium text-blue-600 transition hover:bg-blue-50"
+                >
+                  Teacher Logout
+                </button>
+              </>
             )}
           </div>
 

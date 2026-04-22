@@ -8,8 +8,7 @@ import {
   normalizeTopic,
   saveLocalTeacherTopics,
 } from "./teacherDataStorage";
-
-const API = (process.env.REACT_APP_API_URL || "https://learning-production.up.railway.app").replace(/\/$/, "");
+import API from "./api";
 
 const initialForm = {
   syllabus_id: "",
@@ -19,6 +18,8 @@ const initialForm = {
   video_url: "",
   video_name: "",
   videos: [],
+  pdf_url: "",
+  pdf_name: "",
 };
 
 const isDirectVideoUrl = (url = "") =>
@@ -46,6 +47,24 @@ const fileToDataUrl = async (file) => {
   } catch (error) {
     console.error("Upload error:", error);
     throw new Error("Video upload failed");
+  }
+};
+
+const uploadPdfFile = async (file) => {
+  try {
+    const formData = new FormData();
+    formData.append("pdf", file);
+
+    const res = await fetch(`${API}/upload-pdf`, {
+      method: "POST",
+      body: formData,
+    });
+
+    const data = await res.json();
+    return data.pdf_url || data.file_url || data.url || "";
+  } catch (error) {
+    console.error("PDF upload error:", error);
+    throw new Error("PDF upload failed");
   }
 };
 
@@ -110,6 +129,7 @@ const TeacherSyllabus = () => {
   const [activePreviewByTopic, setActivePreviewByTopic] = useState({});
   const [formData, setFormData] = useState(initialForm);
   const editorFileInputRef = useRef(null);
+  const editorPdfInputRef = useRef(null);
   const token = localStorage.getItem("teacherToken");
 
   useEffect(() => {
@@ -188,6 +208,9 @@ const TeacherSyllabus = () => {
     if (editorFileInputRef.current) {
       editorFileInputRef.current.value = "";
     }
+    if (editorPdfInputRef.current) {
+      editorPdfInputRef.current.value = "";
+    }
   };
 
   const handleInputChange = (field, value) => {
@@ -260,6 +283,37 @@ const TeacherSyllabus = () => {
     }
   };
 
+  const handleEditorPdfChange = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const pdfUrl = await uploadPdfFile(file);
+
+      setFormData((current) => ({
+        ...current,
+        pdf_name: file.name,
+        pdf_url: pdfUrl,
+      }));
+      setError("");
+    } catch (uploadError) {
+      console.error(uploadError);
+      setError("Selected PDF could not be saved.");
+    }
+  };
+
+  const handleRemoveSelectedPdf = () => {
+    setFormData((current) => ({
+      ...current,
+      pdf_name: "",
+      pdf_url: "",
+    }));
+
+    if (editorPdfInputRef.current) {
+      editorPdfInputRef.current.value = "";
+    }
+  };
+
   const handleTopicVideoUpload = async (topic, event) => {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -306,6 +360,8 @@ const TeacherSyllabus = () => {
       video_url: topic.video_url || "",
       video_name: topic.video_name || "",
       videos: topic.videos || [],
+      pdf_url: topic.pdf_url || "",
+      pdf_name: topic.pdf_name || "",
     });
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -374,6 +430,8 @@ const TeacherSyllabus = () => {
       ...formData,
       syllabus_id: topicId,
       course_id: formData.course_id,
+      pdf_url: formData.pdf_url,
+      pdf_name: formData.pdf_name,
       videos:
         formData.videos?.length > 0
           ? formData.videos
@@ -565,6 +623,50 @@ const TeacherSyllabus = () => {
                   <VideoPreview url={formData.video_url} title={formData.topic_name || "Preview"} />
                 </div>
 
+                <div className="border rounded-4 p-3 mb-3" style={{ background: "#f8fafc" }}>
+                  <div className="d-flex justify-content-between align-items-center gap-2 flex-wrap mb-2">
+                    <div className="fw-semibold">PDF Notes</div>
+                    <div className="d-flex gap-2 flex-wrap">
+                      <label className="btn btn-dark rounded-pill px-3 py-2 mb-0">
+                        <FaUpload className="me-2" />
+                        Add PDF
+                        <input
+                          ref={editorPdfInputRef}
+                          type="file"
+                          accept="application/pdf"
+                          hidden
+                          onChange={handleEditorPdfChange}
+                        />
+                      </label>
+                      {(formData.pdf_url || formData.pdf_name) && (
+                        <Button
+                          type="button"
+                          variant="light"
+                          className="rounded-pill px-3 py-2 text-danger"
+                          onClick={handleRemoveSelectedPdf}
+                        >
+                          Remove PDF
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="small text-muted mb-0">
+                    {formData.pdf_name || "No PDF selected"}
+                  </div>
+
+                  {formData.pdf_url && (
+                    <a
+                      href={formData.pdf_url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="btn btn-outline-dark rounded-pill px-3 py-2 mt-3"
+                    >
+                      Open PDF
+                    </a>
+                  )}
+                </div>
+
                 <div className="d-flex gap-2">
                   <Button type="submit" className="btn-dark border-0 rounded-pill px-4">
                     {editMode ? "Update" : "Save"}
@@ -623,6 +725,41 @@ const TeacherSyllabus = () => {
                           <p className="text-muted mb-3">
                             {item.description || "No description added yet."}
                           </p>
+
+                          <div className="d-flex gap-2 flex-wrap mb-3">
+                            {item.pdf_url ? (
+                              <>
+                                <a
+                                  href={item.pdf_url}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="btn btn-outline-dark rounded-pill px-3 py-2"
+                                >
+                                  {item.pdf_name || "Open PDF"}
+                                </a>
+                                <Button
+                                  variant="light"
+                                  className="rounded-pill px-3 py-2 text-danger"
+                                  onClick={() =>
+                                    upsertTopic({
+                                      ...item,
+                                      pdf_name: "",
+                                      pdf_url: "",
+                                    })
+                                  }
+                                >
+                                  Remove PDF
+                                </Button>
+                              </>
+                            ) : (
+                              <span
+                                className="rounded-pill px-3 py-2 small"
+                                style={{ background: "#e2e8f0", color: "#475569", width: "fit-content" }}
+                              >
+                                No PDF
+                              </span>
+                            )}
+                          </div>
 
                           <div className="d-grid gap-2 mb-3">
                             {topicVideos.length > 0 ? (

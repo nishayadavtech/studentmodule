@@ -8,8 +8,7 @@ import {
   mergeSyllabusData,
   saveTeacherProfile,
 } from "./teacherDataStorage";
-
-const API = "https://learning-production.up.railway.app";
+import API from "./api";
 
 export default function Teacherdashboard() {
   const [courses, setCourses] = useState([]);

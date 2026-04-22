@@ -1,15 +1,15 @@
 import React, { createContext, useCallback, useEffect, useState } from "react";
 import axios from "axios";
+import API from "./api";
+import { getStoredStudent } from "./studentDataStorage";
 
 export const CartContext = createContext();
-
-const API = "https://learning-production.up.railway.app";
 
 export const CartProvider = ({ children }) => {
   const [cartCount, setCartCount] = useState(0);
 
   const refreshCartCount = useCallback(async () => {
-    const student = JSON.parse(localStorage.getItem("student") || "null");
+    const student = getStoredStudent();
     const user_id = student?.student_id;
 
     if (!user_id) {

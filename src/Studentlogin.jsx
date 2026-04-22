@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
+import { apiUrl } from "./api";
+import { saveStudentSession } from "./studentDataStorage";
 
 export default function Login() {
   const [form, setForm] = useState({
@@ -18,12 +20,14 @@ export default function Login() {
     e.preventDefault();
 
     try {
-      const res = await axios.post(
-        "https://learning-production.up.railway.app/student/login",
-        form
-      );
+      const res = await axios.post(apiUrl("/student/login"), form);
 
-      localStorage.setItem("student", JSON.stringify(res.data.student));
+      const student = saveStudentSession(res.data);
+
+      if (!student?.student_id) {
+        throw new Error("Student profile data missing in login response.");
+      }
+
       window.dispatchEvent(new Event("cart-updated"));
       window.dispatchEvent(new Event("purchase-updated"));
 
@@ -33,7 +37,13 @@ export default function Login() {
       alert("Login Successful");
       navigate(redirectPath || "/dashboard");
     } catch (err) {
-      alert(err.response?.data?.message || "Login Failed");
+      const status = err.response?.status;
+      const message =
+        status === 401
+          ? "Invalid email or password. Agar naya local setup hai to pehle signup karein."
+          : err.response?.data?.message || "Login Failed";
+
+      alert(message);
     }
   };
 

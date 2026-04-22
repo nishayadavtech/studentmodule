@@ -6,6 +6,7 @@ import {
   FaUpload,
   FaVideo,
 } from "react-icons/fa";
+import { apiUrl, resolveAssetUrl } from "./api";
 
 const placeholderVideo =
   "https://www.w3schools.com/html/mov_bbb.mp4";
@@ -27,7 +28,7 @@ export default function Coursedetail() {
 
   const fetchCourseDetail = useCallback(async () => {
     try {
-      const res = await axios.get(`https://learning-production.up.railway.app/course/course-detail/${id}`);
+      const res = await axios.get(apiUrl(`/course/course-detail/${id}`));
       setCourse(res.data);
     } catch (err) {
       console.error(err);
@@ -52,7 +53,7 @@ export default function Coursedetail() {
 
   const handleUpdatePrice = async () => {
     try {
-      await axios.put(`https://learning-production.up.railway.app/course/update-price/${id}`, {
+      await axios.put(apiUrl(`/course/update-price/${id}`), {
         original_price: newOriginal,
         discount_price: newDiscount,
       });
@@ -111,7 +112,7 @@ export default function Coursedetail() {
   const imgUrl = course.image_url
     ? course.image_url.startsWith("http")
       ? course.image_url
-      : `https://learning-production.up.railway.app${course.image_url}`
+      : resolveAssetUrl(course.image_url)
     : "https://placehold.co/1200x500/e2e8f0/475569?text=Course+Preview";
 
   const displayVideo = videoPreview || placeholderVideo;

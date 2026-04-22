@@ -1,15 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-
-const API = "https://learning-production.up.railway.app";
+import API from "./api";
+import PaginationControls from "./PaginationControls";
 
 export default function TeacherCourses() {
   const navigate = useNavigate();
 
   const [courses, setCourses] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   const [editMode, setEditMode] = useState(false);
   const [editingId, setEditingId] = useState(null);
@@ -24,15 +22,14 @@ export default function TeacherCourses() {
   });
 
   const [imagePreview, setImagePreview] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const coursesPerPage = 6;
 
   useEffect(() => {
     fetchCourses();
   }, []);
 
   const fetchCourses = async () => {
-    setLoading(true);
-    setError(null);
-
     try {
       const token = localStorage.getItem("teacherToken");
 
@@ -46,12 +43,16 @@ export default function TeacherCourses() {
       );
 
       setCourses(Array.isArray(res.data) ? res.data : []);
-    } catch (err) {
-      setError("Failed to load courses");
-    } finally {
-      setLoading(false);
-    }
+      setCurrentPage(1);
+    } catch (err) {}
   };
+
+  const paginatedCourses = useMemo(() => {
+    const startIndex = (currentPage - 1) * coursesPerPage;
+    return courses.slice(startIndex, startIndex + coursesPerPage);
+  }, [courses, currentPage]);
+
+  const totalPages = Math.max(1, Math.ceil(courses.length / coursesPerPage));
 
   // ================= ADD COURSE =================
   const handleAddCourse = async () => {
@@ -265,7 +266,7 @@ export default function TeacherCourses() {
       {/* COURSE GRID */}
     {/* COURSE GRID */}
 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-  {courses.map((c) => {
+  {paginatedCourses.map((c) => {
 
     let imgUrl = null;
 
@@ -348,8 +349,13 @@ export default function TeacherCourses() {
         </div>
       </div>
     );
-  })}
+})}
 </div>
+      <PaginationControls
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={setCurrentPage}
+      />
     </div>
   );
 }

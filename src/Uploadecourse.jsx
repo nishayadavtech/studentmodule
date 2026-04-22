@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import { CartContext } from "./CartContext";
@@ -8,8 +8,9 @@ import {
   savePaymentHistoryToLocal,
   savePurchasedCoursesToLocal,
 } from "./purchaseStorage";
-
-const API = "https://learning-production.up.railway.app";
+import { getStoredStudent } from "./studentDataStorage";
+import API from "./api";
+import PaginationControls from "./PaginationControls";
 
 const normalizeArrayPayload = (payload) => {
   if (Array.isArray(payload)) {
@@ -37,17 +38,20 @@ export default function Course() {
   const [enrollingId, setEnrollingId] = useState(null);
   const [cartCourseIds, setCartCourseIds] = useState([]);
   const [purchasedCourseIds, setPurchasedCourseIds] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const coursesPerPage = 6;
 
   const navigate = useNavigate();
   const location = useLocation();
   const cartContext = useContext(CartContext);
-  const student = JSON.parse(localStorage.getItem("student") || "null");
+  const student = getStoredStudent();
   const student_id = student?.student_id;
 
   const fetchCourses = useCallback(async () => {
     try {
       const res = await axios.get(`${API}/course/all-courses`);
       setCourses(Array.isArray(res.data) ? res.data : []);
+      setCurrentPage(1);
     } catch (err) {
       console.error("Error fetching courses:", err);
       setCourses([]);
@@ -289,6 +293,13 @@ export default function Course() {
     }
   }, [courses, handleEnroll, student_id]);
 
+  const paginatedCourses = useMemo(() => {
+    const startIndex = (currentPage - 1) * coursesPerPage;
+    return courses.slice(startIndex, startIndex + coursesPerPage);
+  }, [courses, currentPage]);
+
+  const totalPages = Math.max(1, Math.ceil(courses.length / coursesPerPage));
+
   const getImageUrl = (course) => {
     const rawImage = course?.image_url || course?.image || "";
 
@@ -309,7 +320,7 @@ export default function Course() {
 
       {courses.length > 0 ? (
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {courses.map((course) => {
+          {paginatedCourses.map((course) => {
             const courseId = Number(course?.course_id);
             const isPurchased = purchasedCourseIds.includes(courseId);
             const isInCart = cartCourseIds.includes(courseId);
@@ -393,6 +404,11 @@ export default function Course() {
       ) : (
         <p className="text-gray-500">No courses found</p>
       )}
+      <PaginationControls
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={setCurrentPage}
+      />
     </div>
   );
 }

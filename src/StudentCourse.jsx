@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-
-const API = process.env.REACT_APP_API_URL;
+import API from "./api";
 
 export default function StudentCourses() {
   const navigate = useNavigate();

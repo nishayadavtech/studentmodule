@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { extractTeacherAuthPayload, saveTeacherProfile } from "./teacherDataStorage";
+import { apiUrl } from "./api";
 
 export default function TeacherLogin() {
   const [email, setEmail] = useState("");
@@ -19,7 +20,7 @@ export default function TeacherLogin() {
     e.preventDefault();
 
     try {
-      const res = await axios.post("https://learning-production.up.railway.app/teacher/login", {
+      const res = await axios.post(apiUrl("/teacher/login"), {
         email,
         password,
       });
