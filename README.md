@@ -10,7 +10,7 @@ This helps avoid browser CORS errors when the backend is hosted on another origi
 
 Current local setup uses:
 
-`REACT_APP_API_PROXY_TARGET=http://localhost:5500`
+`REACT_APP_API_PROXY_TARGET=https://projectmvc.onrender.com`
 
 If you want the browser to call the backend directly in development, set:
 
