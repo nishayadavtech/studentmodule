@@ -1,7 +1,7 @@
 const trimTrailingSlash = (value = "") => value.replace(/\/$/, "");
 
 const configuredApiUrl = trimTrailingSlash(process.env.REACT_APP_API_URL || "");
-const fallbackLocalApiUrl = "http://localhost:5500";
+const fallbackLocalApiUrl = process.env.REACT_APP_API_URL || "";
 const shouldUseDevProxy =
   process.env.NODE_ENV === "development" &&
   process.env.REACT_APP_USE_DEV_PROXY !== "false";
